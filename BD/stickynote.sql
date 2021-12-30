@@ -22,4 +22,11 @@ BEGIN
 		WHERE pId_stickynote = id_stickynote;
     COMMIT;
 END //
+
+CREATE PROCEDURE delete_stickynote(IN pId_stickynote INT)
+BEGIN
+	DELETE FROM stickynote
+    WHERE id_stickynote = pId_stickynote;
+    COMMIT;
+END //
 DELIMITER ;

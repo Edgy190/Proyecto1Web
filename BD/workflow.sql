@@ -28,4 +28,11 @@ BEGIN
 		WHERE id_workflow = pId_workflow;
     COMMIT;
 END //
+
+CREATE PROCEDURE delete_workflow(IN pId_workflow INT)
+BEGIN
+	DELETE FROM workflow
+    WHERE id_workflow = pId_workflow;
+    COMMIT;
+END //
 DELIMITER ;

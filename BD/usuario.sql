@@ -20,4 +20,11 @@ BEGIN
 		WHERE pCorreo = correo;
     COMMIT;
 END //
+
+CREATE PROCEDURE delete_usuario(IN pCorreo VARCHAR(50))
+BEGIN
+	DELETE FROM usuario
+    WHERE correo = pCorreo;
+    COMMIT;
+END //
 DELIMITER ;

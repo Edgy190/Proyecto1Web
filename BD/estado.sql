@@ -19,4 +19,11 @@ BEGIN
 		WHERE pNombre = nombre;
     COMMIT;
 END //
+
+CREATE PROCEDURE delete_estado(IN pNombre VARCHAR(50))
+BEGIN
+	DELETE FROM estado
+    WHERE nombre = pNombre;
+    COMMIT;
+END //
 DELIMITER ;

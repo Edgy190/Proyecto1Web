@@ -25,4 +25,12 @@ BEGIN
 		WHERE id_workflow = pId_workflow OR id_stickynote = pId_stickynote;
     COMMIT;
 END //
+
+CREATE PROCEDURE delete_workflow_X_stickynote(IN pId_workflow INT,
+IN pId_stickynote INT)
+BEGIN
+	DELETE FROM workflow_X_stickynote
+    WHERE id_workflow = pId_workflow OR id_stickynote = pId_stickynote;
+    COMMIT;
+END //
 DELIMITER ;

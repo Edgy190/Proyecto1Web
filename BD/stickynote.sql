@@ -1,0 +1,25 @@
+CREATE TABLE stickynote (
+    id_stickynote INT(8) PRIMARY KEY AUTO_INCREMENT,
+    contenido VARCHAR(250) NOT NULL
+    -- color VARCHAR(25),
+    -- height INT(8) NOT NULL,
+    -- width INT(8) NOT NULL
+);
+
+DELIMITER //
+-- Procedimientos stickynote
+CREATE PROCEDURE insert_stickynote(IN pContenido VARCHAR(250))
+BEGIN
+	INSERT INTO stickynote(contenido)
+    VALUES (pContenido);
+    COMMIT;
+END //
+
+CREATE PROCEDURE update_stickynote(IN pId_stickynote INT, IN pContenido VARCHAR(250))
+BEGIN
+	UPDATE stickynote
+		SET contenido = pContenido
+		WHERE pId_stickynote = id_stickynote;
+    COMMIT;
+END //
+DELIMITER ;

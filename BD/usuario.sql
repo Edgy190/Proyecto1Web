@@ -30,18 +30,17 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE FUNCTION verify_data(IN pCorreo VARCHAR(50), IN pPass VARCHAR(25)) RETURNS CHAR
+CREATE PROCEDURE verify_data(IN pCorreo VARCHAR(50), IN pPass VARCHAR(25), OUT oAnswer CHAR)
 BEGIN
-	SELECT *
-    FROM usuario
-    WHERE pCorreo = correo
-    IF (pCorreo = correo)
-    	IF (SHA(pPass) = pass)
-        	RETURN '1'
-        ELSE
-        	RETURN '0'
-            DECLARE EXIT HANDLER FOR 1176 SELECT 'Password not found.' Message;
-     ELSE
-     	DECLARE EXIT HANDLER FOR 1176 SELECT 'Correo not found.' Message;
+	DECLARE EXIT HANDLER FOR 1176 SELECT 'Password not found.' Message;
+    DECLARE EXIT HANDLER FOR 1232 SELECT 'Incorrect argument type to variable.' Message;
+	SELECT u.correo, u.pass
+    FROM usuario u
+    WHERE pCorreo = u.correo;
+	IF (SHA(pPass) = u.pass) THEN
+		SET oAnswer = 'V';
+	ELSE
+		SET oAnswer = 'F';
+	END IF;
 END //
 DELIMITER ;

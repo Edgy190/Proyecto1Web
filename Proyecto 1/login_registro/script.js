@@ -1,10 +1,10 @@
-function registrar() {
+function enviarDatos_deInicio(archivo) {
     email = document.getElementById('email').value;
     password = document.getElementById('password').value;
 
     var xhttp = new XMLHttpRequest();
 
-    xhttp.open("POST", "registro.php", false);
+    xhttp.open("POST", archivo, false);
 
     xhttp.onreadystatechange = function() { //Call a function when the state changes.
         if(xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
@@ -16,4 +16,4 @@ function registrar() {
     formData.append("email", email);
     formData.append("password", password);
     xhttp.send(formData);
-};
+}

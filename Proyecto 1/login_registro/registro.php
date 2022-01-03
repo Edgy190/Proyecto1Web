@@ -1,7 +1,6 @@
 <?php
 session_start();
 include "db_connection.php";
-include "prueba.html";
 
 $email=$_REQUEST["email"];
 $password=$_REQUEST["password"];
@@ -14,15 +13,12 @@ if (!$conn) {
 $query = "CALL insert_usuario('$email','$password');";
 
 if (mysqli_query($conn, $query)) {
-    echo "Insertion complete";
+    echo "Registration complete";
 }
 else {
     echo "Error: " . $query . mysqli_error($conn);
 }
 
 mysqli_close($conn);
-
-header("Location: prueba.html");
-exit;
 
 ?>

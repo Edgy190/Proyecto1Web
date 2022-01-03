@@ -2,21 +2,25 @@
 session_start();
 
 //require "control_sesion.php"; //importa el control de sesiones el require detecta errores Fatales en la ejecución del archivo importado no así el include!
-include "database_connection.php";
+include "db_connection.php";
 
 $email=$_REQUEST["email"];
 $password=$_REQUEST["password"];
+
 $conn = get_connection();
 
-$result = ejecutar_query($conn, "select id,email from usuarios where email='$email' and password=md5('$password');");
+$query = "CALL verify_data('$email','$password',@verification);";
+$compare = mysqli_query($conn, $query);
+$answer = mysqli_query($conn, "SELECT @verification");
 
-if ($row=pg_fetch_row ($result)) {
-    $_SESSION["id_usuario"]=$row[0];
-    $_SESSION["email_usuario"]=$row[1];
-    echo "[true,{'id_usuario':'$row[0]','email':'$row[1]'}]";
-} else {
-    echo "[false,{'Error':'Las credenciales del usuario no son válidas'}]";
+$verification = $answer->fetch_assoc();
+
+if ($verification["@verification"] == 'V') {
+    echo "Ingreso correcto";
+}
+else {
+    echo "Ingreso incorrecto";
 }
 
-pg_close($conn);
+mysqli_close($conn);
 ?>

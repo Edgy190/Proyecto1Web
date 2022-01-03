@@ -28,3 +28,19 @@ BEGIN
     COMMIT;
 END //
 DELIMITER ;
+
+CREATE FUNCTION verify_data(IN pCorreo VARCHAR(50), IN pPass VARCHAR(25)) RETURNS CHAR
+BEGIN
+	SELECT *
+    FROM usuario
+    WHERE pCorreo = correo
+    IF (pCorreo = correo)
+    	IF (SHA(pPass) = pass)
+        	RETURN '1'
+        ELSE
+        	RETURN '0'
+            DECLARE EXIT HANDLER FOR 1176 SELECT 'Password not found.' Message;
+     ELSE
+     	DECLARE EXIT HANDLER FOR 1176 SELECT 'Correo not found.' Message;
+END //
+DELIMITER ;

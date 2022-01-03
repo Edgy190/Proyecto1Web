@@ -3,7 +3,7 @@ CREATE TABLE stickynote (
     contenido VARCHAR(250) NOT NULL
     -- color VARCHAR(25),
     -- height INT(8) NOT NULL,
-    -- width INT(8) NOT NULL
+    -- width INT(8) NOT NULLl
 );
 
 DELIMITER //

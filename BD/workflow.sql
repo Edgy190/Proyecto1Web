@@ -4,7 +4,9 @@ CREATE TABLE workflow (
     descripcion VARCHAR(250) NOT NULL,
     fecha DATE NOT NULL,
     id_estado INT NOT NULL,
-    CONSTRAINT fk_estado FOREIGN KEY (id_estado) REFERENCES estado(id_estado)
+    correo VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_estado FOREIGN KEY (id_estado) REFERENCES estado(id_estado),
+    CONSTRAINT fk_correo FOREIGN KEY (correo) REFERENCES usuario(correo)
 );
 
 DELIMITER //
@@ -36,3 +38,9 @@ BEGIN
     COMMIT;
 END //
 DELIMITER ;
+
+-- Pruebas
+INSERT INTO estado(id_estado, nombre) VALUES(1, 'Pendiente');
+
+INSERT INTO workflow(id_workflow, nombre, descripcion, id_estado)
+VALUES (1, 'Tabla1', 'xxxxxxxx', 1);

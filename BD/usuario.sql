@@ -32,12 +32,15 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE verify_data(IN pCorreo VARCHAR(50), IN pPass VARCHAR(25), OUT oAnswer CHAR)
 BEGIN
-	DECLARE EXIT HANDLER FOR 1176 SELECT 'Password not found.' Message;
+    DECLARE vPass VARCHAR(25);
+    DECLARE EXIT HANDLER FOR 1176 SELECT 'Password not found.' Message;
     DECLARE EXIT HANDLER FOR 1232 SELECT 'Incorrect argument type to variable.' Message;
-	SELECT u.correo, u.pass
-    FROM usuario u
-    WHERE pCorreo = u.correo;
-	IF (SHA(pPass) = u.pass) THEN
+	SELECT pass
+    INTO vPass
+    FROM usuario
+    WHERE pCorreo = correo;
+    SET pPass = SHA(pPass);
+    IF (pPass = vPass) THEN
 		SET oAnswer = 'V';
 	ELSE
 		SET oAnswer = 'F';

@@ -5,7 +5,93 @@ let notecount = 0;
 let pizarracount = 0;
 
 
+CargarDatos();
 
+function CargarDatos(){
+  var pizarrasas = [];
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("POST", "get_pizarra.php", false);
+
+  xhttp.onreadystatechange = function () { //Call a function when the state changes.
+    if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
+      alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
+    }
+  };
+
+  var formData = new FormData();
+  formData.append("idusuario", 1);
+
+  xhttp.onload = function () {
+    pizarrasas  = this.response;
+
+  };
+
+  xhttp.send(formData);
+  const piz = pizarrasas.split("/");
+  piz.pop();
+
+  
+  piz.forEach(element =>{
+
+
+    var estados = [];
+
+    const pizacont = document.getElementById("pizarras");
+    const piza = element.split(",");
+
+    const newDiv = document.createElement("div");
+    newDiv.className = "pizarra";
+    const color = getRandomColor();
+    const titleop = document.createElement("input");
+    titleop.className = "tituloPizarra";
+    titleop.style.backgroundColor = color;
+    titleop.value = piza[1];
+    const Depop = document.createElement("input");
+    Depop.className = "tituloPizarra";
+    Depop.style.backgroundColor = color;
+    Depop.value = piza[2];
+    const fechaop = document.createElement("input");
+    fechaop.className = "tituloPizarra";
+    fechaop.style.backgroundColor = color;
+    fechaop.value = piza[3];
+    fechaop.readOnly = true;
+    newDiv.appendChild(titleop);
+    newDiv.appendChild(Depop);
+    newDiv.appendChild(fechaop);
+
+    
+    var xxhttp = new XMLHttpRequest();
+    xxhttp.open("POST", "get_estados.php", false);
+    var formData = new FormData();
+    formData.append("workflow_id",piza[0]);
+    xxhttp.onload = function () {
+      estados  = this.response;
+    };
+    xxhttp.send(formData);
+    const esta = estados.split("/");
+    esta.pop();
+    esta.forEach(element =>{
+      const con = element.split(",");
+      const cat1 = document.createElement("div");
+      cat1.className =  "categorias";
+      cat1.id = con[0];
+      cat1.ondrop = dragDrop;
+      cat1.ondragover = allowDrop;
+
+      const tituloC1 = document.createElement('input');
+      tituloC1.className = "TCategoria";
+      tituloC1.value = con[1];
+      tituloC1.readOnly = true;
+      cat1.appendChild(tituloC1);
+      newDiv.appendChild(cat1);
+    })
+
+    newDiv.id = piza[0];
+    pizacont.appendChild(newDiv);
+
+  });
+
+}
 
 function crearPizzarra() {
   const pizarras = document.getElementById("pizarras");

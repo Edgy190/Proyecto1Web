@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sticky Notes</title>
+    <link href="main.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="main">
+        <div class="Header" id="0">
+            <h1 class="tituloP">Organizador</h1>
+            <div id="buton">
+                <button id="badd" class="add-button" onmousedown="crearPizzarra()">+</button>
+                <button class="note-button" onmousedown="crearNota()">+</button>
+            </div>
+
+        </div>
+        <div id=showNotas></div>
+        <div id="pizarras"></div>
+
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>

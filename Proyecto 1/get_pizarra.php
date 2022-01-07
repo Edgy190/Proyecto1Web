@@ -20,7 +20,7 @@
           }
     }
     else {
-        echo "Error: " . $query . mysqli_error($conn);
+        echo "Error" . mysqli_error($conn);
     }
 
     mysqli_close($conn);

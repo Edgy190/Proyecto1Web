@@ -27,10 +27,10 @@ function CargarDatos() {
   const piz = pizarrasas.split("/");
   piz.pop();
 
-//pizarras
+  //pizarras
   piz.forEach(element => {
 
-
+    //creacion de la pizarra contenedora con sus titulos
     var estados = [];
 
     const pizacont = document.getElementById("pizarras");
@@ -43,10 +43,44 @@ function CargarDatos() {
     titleop.className = "tituloPizarra";
     titleop.style.backgroundColor = color;
     titleop.value = piza[1];
+
+    var msg = new SpeechSynthesisUtterance();
+    msg.lang = "es-ES";
+    msg.text = piza[1];
+    window.speechSynthesis.speak(msg);
+
+
+    //evento para actualizar la pizarra
+    titleop.addEventListener("keyup", () => {
+
+      xhttp.open("POST", "update_pizarra.php", false);
+      var formData = new FormData();
+      formData.append("id_workflow", piza[0]);
+      formData.append("nombre", titleop.value);
+      formData.append("descripcion", Depop.value);
+      formData.append("fecha", fechaop.value);
+      formData.append("id_usuario", 1);
+      xhttp.send(formData);
+
+    });
     const Depop = document.createElement("input");
     Depop.className = "tituloPizarra";
     Depop.style.backgroundColor = color;
     Depop.value = piza[2];
+
+    Depop.addEventListener("keyup", () => {
+
+      xhttp.open("POST", "update_pizarra.php", false);
+      var formData = new FormData();
+      formData.append("id_workflow", piza[0]);
+      formData.append("nombre", titleop.value);
+      formData.append("descripcion", Depop.value);
+      formData.append("fecha", fechaop.value);
+      formData.append("id_usuario", 1);
+      xhttp.send(formData);
+
+    });
+
     const fechaop = document.createElement("input");
     fechaop.className = "tituloPizarra";
     fechaop.style.backgroundColor = color;
@@ -55,6 +89,8 @@ function CargarDatos() {
     newDiv.appendChild(titleop);
     newDiv.appendChild(Depop);
     newDiv.appendChild(fechaop);
+
+    //recuperar estados de las tablas
 
 
     var xxhttp = new XMLHttpRequest();
@@ -94,7 +130,7 @@ function CargarDatos() {
       notB.pop();
       //notas
       notB.forEach(element => {
-        const notitas = document.getElementById("showNotas");
+
         const notBB = element.split(",");
         const note = document.createElement('textarea');
         note.className = 'note';
@@ -159,14 +195,20 @@ function CargarDatos() {
           document.body.appendChild(modal);
           modal.style.display = "block";
 
-
+          //Eliminar la Nota 
           const eliminar = document.createElement("button");
           eliminar.className = "notaEliminar";
           eliminar.innerHTML = "Eliminar";
           eliminar.onclick = function () {
+
+            xhttp.open("POST", "Delete_nota.php", false);
+            var formData = new FormData();
+            formData.append("id_stickynote", note.id);
+            xhttp.send(formData);
             note.remove();
             modal.style.display = "none";
             modal.remove();
+
           }
           mfooter.appendChild(eliminar);
 
@@ -221,7 +263,66 @@ function CargarDatos() {
 
     })
 
+
+
     newDiv.id = piza[0];
+
+
+    const button = document.createElement("button");
+    button.className = "botonPizarra";
+    button.style.backgroundColor = color;
+    button.innerHTML = "X";
+    button.addEventListener("click", () => {
+      //get estados
+      xxhttp.open("POST", "get_estados.php", false);
+      var formData = new FormData();
+      formData.append("workflow_id", newDiv.id);
+      xxhttp.onload = function () {
+        estados = this.response;
+      };
+      xxhttp.send(formData);
+      const esta = estados.split("/");
+      esta.pop();
+      //estados
+      esta.forEach(element => {
+        const con = element.split(",");
+        //getnotas
+        xhttp.open("POST", "gets_notas.php", false);
+        var formData = new FormData();
+        formData.append("estado_id", con[0]);
+        xhttp.onload = function () {
+          notasbases = this.response;
+        };
+        xhttp.send(formData);
+        const notB = notasbases.split("/");
+        notB.pop();
+        //notas
+        notB.forEach(element => {
+          const notBB = element.split(",");
+          xhttp.open("POST", "Delete_nota.php", false);
+          var formData = new FormData();
+          formData.append("id_stickynote", notBB[0]);
+          xhttp.send(formData);
+
+        });
+        //delete estado
+        xhttp.open("POST", "Delete_estados.php", false);
+        var formData = new FormData();
+        formData.append("id_estado", con[0]);
+        xhttp.send(formData);
+
+      });
+      //delete pizarra
+      xhttp.open("POST", "Delete_pizarra.php", false);
+      var formData = new FormData();
+      formData.append("id_workflow", newDiv.id);
+      xhttp.send(formData);
+
+      pizarras.removeChild(newDiv);
+
+    });
+    newDiv.appendChild(button);
+
     pizacont.appendChild(newDiv);
 
 
@@ -314,6 +415,10 @@ function CargarDatos() {
       eliminar.className = "notaEliminar";
       eliminar.innerHTML = "Eliminar";
       eliminar.onclick = function () {
+        xhttp.open("POST", "Delete_nota.php", false);
+        var formData = new FormData();
+        formData.append("id_stickynote", note.id);
+        xhttp.send(formData);
         note.remove();
         modal.style.display = "none";
         modal.remove();
@@ -371,6 +476,7 @@ function CargarDatos() {
 }
 
 function crearPizzarra() {
+  var xhttp = new XMLHttpRequest();
   const pizarras = document.getElementById("pizarras");
   const newDiv = document.createElement("div");
   newDiv.className = "pizarra";
@@ -383,10 +489,41 @@ function crearPizzarra() {
   titleop.style.backgroundColor = color;
   titleop.value = "Titulo";
 
+  //actualizar Titulo
+
+  titleop.addEventListener("keyup", () => {
+
+    xhttp.open("POST", "update_pizarra.php", false);
+    var formData = new FormData();
+    formData.append("id_workflow", newDiv.id);
+    formData.append("nombre", titleop.value);
+    formData.append("descripcion", Depop.value);
+    formData.append("fecha", fechaop.value);
+    formData.append("id_usuario", 1);
+    xhttp.send(formData);
+
+  });
+
+
   const Depop = document.createElement("input");
   Depop.className = "tituloPizarra";
   Depop.style.backgroundColor = color;
   Depop.value = "Descripcion";
+
+  //actualizar Titulo
+
+  Depop.addEventListener("keyup", () => {
+
+    xhttp.open("POST", "update_pizarra.php", false);
+    var formData = new FormData();
+    formData.append("id_workflow", newDiv.id);
+    formData.append("nombre", titleop.value);
+    formData.append("descripcion", Depop.value);
+    formData.append("fecha", fechaop.value);
+    formData.append("id_usuario", 1);
+    xhttp.send(formData);
+
+  });
 
   const fechaop = document.createElement("input");
   fechaop.className = "tituloPizarra";
@@ -453,10 +590,52 @@ function crearPizzarra() {
   button.style.backgroundColor = color;
   button.innerHTML = "X";
   button.addEventListener("click", () => {
-    const doDelete = confirm("¿Desea eliminar esta pizarra");
-    if (doDelete) {
-      pizarras.removeChild(newDiv);
-    }
+    //get estados
+    xhttp.open("POST", "get_estados.php", false);
+    var formData = new FormData();
+    formData.append("workflow_id", newDiv.id);
+    xhttp.onload = function () {
+      estados = this.response;
+    };
+    xhttp.send(formData);
+    const esta = estados.split("/");
+    esta.pop();
+    //estados
+    esta.forEach(element => {
+      const con = element.split(",");
+      //getnotas
+      xhttp.open("POST", "gets_notas.php", false);
+      var formData = new FormData();
+      formData.append("estado_id", con[0]);
+      xhttp.onload = function () {
+        notasbases = this.response;
+      };
+      xhttp.send(formData);
+      const notB = notasbases.split("/");
+      notB.pop();
+      //notas
+      notB.forEach(element => {
+        const notBB = element.split(",");
+        xhttp.open("POST", "Delete_nota.php", false);
+        var formData = new FormData();
+        formData.append("id_stickynote", notBB[0]);
+        xhttp.send(formData);
+
+      });
+      //delete estado
+      xhttp.open("POST", "Delete_estados.php", false);
+      var formData = new FormData();
+      formData.append("id_estado", con[0]);
+      xhttp.send(formData);
+
+    });
+    //delete pizarra
+    xhttp.open("POST", "Delete_pizarra.php", false);
+    var formData = new FormData();
+    formData.append("id_workflow", newDiv.id);
+    xhttp.send(formData);
+
+    pizarras.removeChild(newDiv);
   });
   newDiv.appendChild(button);
   // add the newly created element and its content into the DOM
@@ -465,95 +644,95 @@ function crearPizzarra() {
   //newDiv.id = "note" + pizarracount;
 
   pizarras.appendChild(newDiv);
-  /*
-    //Insertar a la base
-  
-    //Pizarra
-  
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "pizarras.php", false);
-  
-    xhttp.onreadystatechange = function () { //Call a function when the state changes.
-      if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
-        alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
-      }
-    };
-  
-    var formData = new FormData();
-    formData.append("nombre", titleop.value);
-    formData.append("descripcion", Depop.value);
-    formData.append("fecha", fechaop.value);
-    formData.append("id_usuario", 1);
-  
-    xhttp.onload = function () {
-      newDiv.id = this.responseText;
-  
-    };
-  
-    xhttp.send(formData);
-  
-    //estados
-    //1
-    xhttp.open("POST", "estados.php", false);
-  
-    xhttp.onreadystatechange = function () { //Call a function when the state changes.
-      if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
-        alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
-      }
-    };
-  
-    var formData = new FormData();
-    formData.append("nombre", tituloC1.value);
-    formData.append("workflow_id", newDiv.id);
-    xhttp.onload = function () {
-      cat1.id = this.responseText;
-    };
-  
-    xhttp.send(formData);
-  
-    //2
-  
-    xhttp.open("POST", "estados.php", false);
-  
-    xhttp.onreadystatechange = function () { //Call a function when the state changes.
-      if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
-        alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
-      }
-    };
-  
-    
-    var formData = new FormData();
-    formData.append("nombre", tituloC2.value);
-    formData.append("workflow_id", newDiv.id);
-  
-    xhttp.onload = function () {
-      cat2.id = this.responseText;
-    };
-  
-    xhttp.send(formData);
-  
-  //3
-  
-  xhttp.open("POST", "estados.php", false);
-  
+
+  //Insertar a la base
+
+  //Pizarra
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("POST", "pizarras.php", false);
+
   xhttp.onreadystatechange = function () { //Call a function when the state changes.
     if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
       alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
     }
   };
-  
-  
+
+  var formData = new FormData();
+  formData.append("nombre", titleop.value);
+  formData.append("descripcion", Depop.value);
+  formData.append("fecha", fechaop.value);
+  formData.append("id_usuario", 1);
+
+  xhttp.onload = function () {
+    newDiv.id = this.responseText;
+
+  };
+
+  xhttp.send(formData);
+
+  //estados
+  //1
+  xhttp.open("POST", "estados.php", false);
+
+  xhttp.onreadystatechange = function () { //Call a function when the state changes.
+    if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
+      alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
+    }
+  };
+
+  var formData = new FormData();
+  formData.append("nombre", tituloC1.value);
+  formData.append("workflow_id", newDiv.id);
+  xhttp.onload = function () {
+    cat1.id = this.responseText;
+  };
+
+  xhttp.send(formData);
+
+  //2
+
+  xhttp.open("POST", "estados.php", false);
+
+  xhttp.onreadystatechange = function () { //Call a function when the state changes.
+    if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
+      alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
+    }
+  };
+
+
+  var formData = new FormData();
+  formData.append("nombre", tituloC2.value);
+  formData.append("workflow_id", newDiv.id);
+
+  xhttp.onload = function () {
+    cat2.id = this.responseText;
+  };
+
+  xhttp.send(formData);
+
+  //3
+
+  xhttp.open("POST", "estados.php", false);
+
+  xhttp.onreadystatechange = function () { //Call a function when the state changes.
+    if (xhttp.readyState == 4 && xhttp.status == 200) { // complete and no errors
+      alert(xhttp.responseText); // some processing here, or whatever you want to do with the response
+    }
+  };
+
+
   var formData = new FormData();
   formData.append("nombre", tituloC3.value);
   formData.append("workflow_id", newDiv.id);
-  
+
   xhttp.onload = function () {
     cat3.id = this.responseText;
   };
-  
+
   xhttp.send(formData);
-    
-  */
+
+
 }
 
 function getRandomColor() {
@@ -674,6 +853,10 @@ function crearNota() {
     eliminar.className = "notaEliminar";
     eliminar.innerHTML = "Eliminar";
     eliminar.onclick = function () {
+      xhttp.open("POST", "Delete_nota.php", false);
+      var formData = new FormData();
+      formData.append("id_stickynote", note.id);
+      xhttp.send(formData);
       note.remove();
       modal.style.display = "none";
       modal.remove();
@@ -724,12 +907,10 @@ function crearNota() {
     //note.remove();
 
   });
-  //notecount++;
-  //note.id = 'nota' + notecount;
+
   const notitas = document.getElementById("showNotas");
 
   notitas.appendChild(note);
-  //document.body.appendChild(note);
 
 }
 

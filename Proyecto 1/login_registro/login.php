@@ -18,7 +18,7 @@ $verification = $answer->fetch_assoc();
 
 if ($verification["@verification"] == 'V') {
     $_SESSION['email'] = $email;
-    header('location: prueba.php');
+    header('location: ./pizarra/index.html');
 }
 else {
     echo "Ingreso incorrecto";
